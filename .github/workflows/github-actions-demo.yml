@@ -16,3 +16,12 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+      # SECRET
+      - name: Use Repository Secret
+        run: |
+          echo "JWT secret loaded successfully"
+          echo $JWT_SECRET
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
