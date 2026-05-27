@@ -12,6 +12,9 @@ export const tenantChecker = async (req, reply) => {
     return;
   }
   try {
+    console.log("ENV KEY:", process.env.TENANT_API_KEY);
+    console.log("HEADERS:", req.headers);
+    console.log("HEADERS keys:", Object.keys(req.headers));
     const tenantId = req.headers[process.env.TENANT_API_KEY];
     if (!tenantId) {
       return reply

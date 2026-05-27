@@ -1,17 +1,35 @@
 import { createClient } from "redis";
 
-const redis = createClient();
-redis.on("error", (err) => console.log("Redis Client Error", err));
+const options = {
+  url: process.env.REDIS_URL,
+  socket: {
+    reconnectStrategy(retries) {
+      if (retries > 10) {
+        return new Error("Redis unavailable");
+      }
 
-redis
-  .connect()
-  .then(() => console.log("redis connected"))
-  .catch((err) => console.log(err));
+      return 1000; // retry every second
+    },
+  },
+};
 
-const redisWorker = createClient();
-redisWorker
-  .connect()
-  .then(() => console.log("redisWorker connected"))
-  .catch((err) => console.log(err));
+const redis = createClient(options);
+const redisWorker = createClient(options);
+
+redis.on("error", (err) => {
+  console.log("Redis Error:", err.message);
+});
+
+redisWorker.on("error", (err) => {
+  console.log("Redis Worker Error:", err.message);
+});
+
+export async function connectRedis() {
+  await redis.connect();
+  console.log("redis connected");
+
+  await redisWorker.connect();
+  console.log("redisWorker connected");
+}
 
 export { redis, redisWorker };
