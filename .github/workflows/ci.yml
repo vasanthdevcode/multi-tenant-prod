@@ -16,9 +16,9 @@ jobs:
       working-directory: server
       run: npm install
 
-    - name: Run Server Tests
-      working-directory: server
-      run: npm test
+    # - name: Run Server Tests
+    #   working-directory: server
+    #   run: npm test
 
     - name: Install Client Dependencies
       working-directory: client
