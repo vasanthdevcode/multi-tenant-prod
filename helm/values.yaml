@@ -1,0 +1,21 @@
+frontend:
+  replicaCount: 2
+
+  image:
+    repository: vasanthdevcode/helm-frontend-app
+    tag: latest
+
+  service:
+    type: ClusterIP
+    port: 80
+
+backend:
+  replicaCount: 2
+
+  image:
+    repository: vasanthdevcode/helm-backend-app
+    tag: latest
+
+  service:
+    type: ClusterIP
+    port: 3000
