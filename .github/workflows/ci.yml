@@ -1,0 +1,64 @@
+name: CI Pipeline
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    # install packages and run test
+    - name: Install Server Dependencies
+      working-directory: server
+      run: npm install
+
+    - name: Run Server Tests
+      working-directory: server
+      run: npm test
+
+    - name: Install Client Dependencies
+      working-directory: client
+      run: npm install
+      
+    # build and push
+    - name: Build Backend Image
+      run: |
+        docker build \
+        -t vasanthdevcode/backend-app:${{ github.sha }} \
+        ./server
+
+    - name: Push Backend Image
+      run: |
+        docker push \
+        vasanthdevcode/backend-app:${{ github.sha }}
+
+    - name: Build Frontend Image
+      run: |
+        docker build \
+        -t vasanthdevcode/frontend-app:${{ github.sha }} \
+        ./client
+
+    - name: Push Frontend Image
+      run: |
+        docker push \
+        vasanthdevcode/frontend-app:${{ github.sha }}
+      
+    # deploy
+    - name: Apply Kubernetes
+      run: |
+        kubectl apply -f kubernetes/
+
+    - name: Update Backend
+      run: |
+        kubectl set image deployment/backend-deployment \
+        backend=vasanthdevcode/backend-app:${{ github.sha }}
+
+    - name: Update Frontend
+      run: |
+        kubectl set image deployment/frontend-deployment \
+        frontend=vasanthdevcode/frontend-app:${{ github.sha }}
+
