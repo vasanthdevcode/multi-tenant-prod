@@ -10,8 +10,12 @@ const userSchema = new mongoose.Schema({
   name: { type: String, trim: true, required: true },
   email: { type: String, trim: true, required: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "manager", "viewer"], required: true },
-  status: { type: String, enum: ["active", "inactive"], required: true },
+  role: {
+    type: String,
+    enum: ["admin", "manager", "viewer"],
+    default: "admin",
+  },
+  status: { type: String, enum: ["active", "inactive"], default: "active" },
   createdAt: { type: Date, default: Date.now },
 });
 

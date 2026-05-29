@@ -13,4 +13,15 @@ const createTenant = async (req, reply) => {
   }
 };
 
-export default { createTenant };
+const allTenant = async (req, reply) => {
+  try {
+    const tenant = await Tenant.find();
+    return reply.status(200).send({ sucess: true, data: tenant });
+  } catch (error) {
+    return reply
+      .status(500)
+      .send({ sucess: false, message: `Error: ${error.message}` });
+  }
+};
+
+export default { createTenant, allTenant };
